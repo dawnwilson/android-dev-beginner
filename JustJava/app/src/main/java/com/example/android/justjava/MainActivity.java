@@ -25,6 +25,7 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        displayPrice(this.quantity);
     }
 
     /**
@@ -84,7 +85,7 @@ public class MainActivity extends ActionBarActivity {
      */
     private void displayPrice(int number) {
         TextView priceTextView = (TextView) findViewById(R.id.price_text_view);
-        priceTextView.setText(NumberFormat.getCurrencyInstance().format(number));
+        priceTextView.setText("Total: " + NumberFormat.getCurrencyInstance().format(number));
     }
 
     /**
