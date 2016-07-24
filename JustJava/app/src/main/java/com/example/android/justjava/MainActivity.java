@@ -13,9 +13,13 @@ import java.text.NumberFormat;
 public class MainActivity extends ActionBarActivity {
 
     /**
-     * This method is called when the order button is clicked.
+     * The number of coffees
      */
-    int quantity = 2;
+    private int quantity = 0;
+    /**
+     * The price per coffee
+     */
+    private static final int PRICE_PER_COFFEE = 5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,25 +27,60 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
     }
 
-    public void submitOrder(View view) {
-        display(this.quantity);
-        displayPrice(this.quantity * 5);
-    }
-
+    /**
+     * Increment quantity and update displays
+     * Called when the + button is clicked
+     *
+     * @param view
+     */
     public void increment(View view) {
         this.quantity++;
-        display(this.quantity);
+        updateDisplay();
     }
 
+    /**
+     * Increment the quantity and display it and the new price
+     * Called when the - button is clicked
+     *
+     * @param view
+     */
     public void decrement(View view) {
         if (this.quantity > 0) {
             this.quantity--;
-//            display(this.quantity);
+            updateDisplay();
         }
     }
 
     /**
-     * This method displays the given price on the screen.
+     * Displays value in the thanks_text_view
+     * Called when the submit button is clicked
+     *
+     * @param view
+     */
+    public void submitOrder(View view) {
+        TextView thanksTextView = (TextView) findViewById(R.id.thanks_text_view);
+        thanksTextView.setText("Thank You!");
+    }
+
+    /**
+     * Updates quantity and price to be displayed
+     */
+    private void updateDisplay() {
+        displayQuantity(this.quantity);
+        displayPrice(this.quantity * PRICE_PER_COFFEE);
+        removeThanks();
+    }
+
+    private void removeThanks() {
+        TextView thanksTextView = (TextView) findViewById(R.id.thanks_text_view);
+        thanksTextView.setText("");
+    }
+
+
+    /**
+     * Display the given total price in the price_text_view
+     *
+     * @param number The value to display
      */
     private void displayPrice(int number) {
         TextView priceTextView = (TextView) findViewById(R.id.price_text_view);
@@ -49,9 +88,11 @@ public class MainActivity extends ActionBarActivity {
     }
 
     /**
-     * This method displays the given quantity value on the screen.
+     * Display the given quantity value in the quantity_text_view
+     *
+     * @param number The value to display
      */
-    private void display(int number) {
+    private void displayQuantity(int number) {
         TextView quantityTextView = (TextView) findViewById(
                 R.id.quantity_text_view);
         quantityTextView.setText("" + number);
