@@ -1,16 +1,16 @@
 package com.example.android.justjava;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.TextView;
-
-import java.text.NumberFormat;
 
 /**
  * This app displays an order form to order coffee.
  */
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends AppCompatActivity {
 
     /**
      * The number of coffees
@@ -21,81 +21,104 @@ public class MainActivity extends ActionBarActivity {
      */
     private static final int PRICE_PER_COFFEE = 5;
 
+    private EditText nameEditText;
+    private TextView orderSummaryTextView;
+    private CheckBox whippedCreamCheckbox;
+    private CheckBox chocolateCheckbox;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        displayPrice(this.quantity);
+
+        //region SETUP CONTROL VARIABLES
+        nameEditText = (EditText) findViewById(R.id.name_edit_text);
+        orderSummaryTextView = (TextView) findViewById(R.id.order_summary_text_view);
+        whippedCreamCheckbox = (CheckBox) findViewById(R.id.whipped_cream_checkbox);
+        chocolateCheckbox = (CheckBox) findViewById(R.id.chocolate_checkbox);
+        //endregion SETUP CONTROL VARIABLES
     }
 
     /**
      * Increment quantity and update displays
      * Called when the + button is clicked
      *
-     * @param view
+     * @param view the control that triggered increment
      */
     public void increment(View view) {
         this.quantity++;
-        updateDisplay();
+        displayQuantity(quantity);
     }
 
     /**
      * Increment the quantity and display it and the new price
      * Called when the - button is clicked
      *
-     * @param view
+     * @param view the control that triggered decrement
      */
     public void decrement(View view) {
         if (this.quantity > 0) {
             this.quantity--;
-            updateDisplay();
+            displayQuantity(quantity);
         }
     }
 
     /**
-     * Displays value in the thanks_text_view
      * Called when the submit button is clicked
      *
-     * @param view
+     * @param view the control that triggered submitOrder
      */
     public void submitOrder(View view) {
-        TextView thanksTextView = (TextView) findViewById(R.id.thanks_text_view);
-        thanksTextView.setText("Thank You!");
+        orderSummaryTextView.setText(createOrderSummary(nameEditText.getText().toString(),
+                whippedCreamCheckbox.isChecked(), chocolateCheckbox.isChecked(),
+                calculatePrice()));
     }
 
     /**
-     * Updates quantity and price to be displayed
-     */
-    private void updateDisplay() {
-        displayQuantity(this.quantity);
-        displayPrice(this.quantity * PRICE_PER_COFFEE);
-        removeThanks();
-    }
-
-    private void removeThanks() {
-        TextView thanksTextView = (TextView) findViewById(R.id.thanks_text_view);
-        thanksTextView.setText("");
-    }
-
-
-    /**
-     * Display the given total price in the price_text_view
+     * Creates order summary
      *
-     * @param number The value to display
+     * @param name         customers entered name
+     * @param whippedCream does customer want whipped cream
+     * @param chocolate    does customer want chocolate
+     * @param price        total price
+     * @return the order summary message
      */
-    private void displayPrice(int number) {
-        TextView priceTextView = (TextView) findViewById(R.id.price_text_view);
-        priceTextView.setText("Total: " + NumberFormat.getCurrencyInstance().format(number));
+    private String createOrderSummary(String name, boolean whippedCream, boolean chocolate, int price) {
+        String priceMessage = "Name: " + name;
+        priceMessage += "\nAdd whipped cream? " + whippedCream;
+        priceMessage += "\nAdd chocolate? " + chocolate;
+        priceMessage += "\nQuantity: " + quantity;
+        priceMessage += "\nTotal: $" + price;
+        priceMessage += "\nThank you!";
+        return priceMessage;
+    }
+
+    /**
+     * Calculates total price of order
+     *
+     * @return the total price of order
+     */
+    private int calculatePrice() {
+        int extraCost = 0;
+
+        if (whippedCreamCheckbox.isChecked()) {
+            extraCost++;
+        }
+
+        if (chocolateCheckbox.isChecked()) {
+            extraCost += 2;
+        }
+
+        return quantity * (PRICE_PER_COFFEE + extraCost);
     }
 
     /**
      * Display the given quantity value in the quantity_text_view
      *
-     * @param number The value to display
+     * @param numberOfCoffees the value to display
      */
-    private void displayQuantity(int number) {
-        TextView quantityTextView = (TextView) findViewById(
-                R.id.quantity_text_view);
-        quantityTextView.setText("" + number);
+    private void displayQuantity(int numberOfCoffees) {
+        TextView quantityTextView = (TextView) findViewById(R.id.quantity_text_view);
+        quantityTextView.setText("" + numberOfCoffees);
     }
 }
